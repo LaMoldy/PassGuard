@@ -1,8 +1,8 @@
-import customtkinter
+from customtkinter import CTk, set_appearance_mode
 import platform
 from PIL import ImageTk
 
-class App(customtkinter.CTk):
+class App(CTk):
     TITLE = 'PassGuard'
     WIDTH = 800
     HEIGHT = 500
@@ -25,4 +25,4 @@ class App(customtkinter.CTk):
             self.iconimage = ImageTk.PhotoImage(file=self.WINDOW_IMAGE)
             self.iconphoto(True, self.iconimage)
 
-        customtkinter.set_appearance_mode(self.DEFAULT_APPEARANCE)
+        set_appearance_mode(self.DEFAULT_APPEARANCE)
