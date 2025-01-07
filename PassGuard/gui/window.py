@@ -10,7 +10,7 @@ class App(CTk):
     HEIGHT_RESIZABLE = False
     WINDOW_ICON = './assets/logo.ico'
     WINDOW_IMAGE = './assets/logo.png'
-    DEFAULT_APPEARANCE = 'light'
+    DEFAULT_APPEARANCE = 'dark'
 
     def __init__(self):
         super().__init__()

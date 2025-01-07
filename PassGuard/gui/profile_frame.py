@@ -1,4 +1,4 @@
-from customtkinter import CTkFrame, CTkLabel, CTkButton
+from customtkinter import CTkFrame, CTkLabel, CTkButton, get_appearance_mode
 
 class ProfilePage(CTkFrame):
     def __init__(self, master, **kwargs):
@@ -8,19 +8,19 @@ class ProfilePage(CTkFrame):
         window_bg = master.cget('fg_color')
         self.configure(fg_color=window_bg)
 
-        self.welcome_message = CTkLabel(
+        welcome_message = CTkLabel(
             self,
             text='Welcome',
             font=('Segoe UI', 36)
         )
-        self.welcome_message.grid(row=0, column=0, padx=20, pady=(30, 0))
+        welcome_message.grid(row=0, column=0, padx=20, pady=(30, 0))
 
-        self.profile_message = CTkLabel(
+        profile_message = CTkLabel(
             self,
             text='Please select a profile to continue',
             font=('Segoe UI', 16)
         )
-        self.profile_message.grid(row=1, column=0, padx=0, pady=3)
+        profile_message.grid(row=1, column=0, padx=0, pady=3)
 
         self.create_new_profile_button = CTkButton(
             self,
@@ -37,6 +37,10 @@ class ProfilePage(CTkFrame):
         )
         self.create_new_profile_button.bind('<Enter>', self.on_hover)
         self.create_new_profile_button.bind('<Leave>', self.on_leave)
+
+        if get_appearance_mode() == "Dark":
+            self.create_new_profile_button.configure(fg_color="gray10")
+
         self.create_new_profile_button.grid(row=2, column=0, padx=0, pady=30)
 
     def create_new_profile(self):
@@ -44,13 +48,25 @@ class ProfilePage(CTkFrame):
         PageController.set_page(self.window, Pages.CREATE_PROFILE)
 
     def on_hover(self, event):
-        self.create_new_profile_button.configure(
-            text_color='white',
-            fg_color='gray'
-        )
+        if get_appearance_mode() == "Dark":
+            self.create_new_profile_button.configure(
+                text_color='white',
+                fg_color='#141414'
+            )
+        else:
+            self.create_new_profile_button.configure(
+                text_color='white',
+                fg_color='gray'
+            )
 
     def on_leave(self, event):
-        self.create_new_profile_button.configure(
-            text_color='gray',
-            fg_color='lightgray'
-        )
+        if get_appearance_mode() == "Dark":
+            self.create_new_profile_button.configure(
+                text_color='white',
+                fg_color='gray10'
+            )
+        else:
+            self.create_new_profile_button.configure(
+                text_color='white',
+                fg_color='lightgray'
+            )
