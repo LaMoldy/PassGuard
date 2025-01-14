@@ -1,13 +1,12 @@
 from customtkinter import CTkFrame, CTkLabel, CTkEntry, CTkButton, CTkImage, filedialog
 from PIL import Image, ImageEnhance
-from pywinstyles import set_opacity
+from gui.widgets import Toast
 
 class CreateProfilePage(CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
         self.window = master
-
         self.profile_image = None
 
         ENTRY_WIDTH = 250
@@ -24,8 +23,8 @@ class CreateProfilePage(CTkFrame):
         )
         message.grid(row=0, column=0, columnspan=2, padx=0, pady=(30, 0))
 
-        image_path = 'assets/default_avatar.png'
-        self.default_image = Image.open(image_path)
+        self.image_path = 'assets/default_avatar.png'
+        self.default_image = Image.open(self.image_path)
         self.profile_image = self.default_image
         default_button_image = CTkImage(self.default_image, size=(100, 100))
         self.profile_image_button = CTkButton(
@@ -111,7 +110,6 @@ class CreateProfilePage(CTkFrame):
         )
         self.create_profile_button.grid(row=9, column=1, padx=(20, 0), pady=30)
 
-
     def on_hover(self, event):
         darker_button_image = ImageEnhance.Brightness(self.profile_image).enhance(0.5)
         hover_image = CTkImage(darker_button_image, size=(100, 100))
@@ -122,8 +120,8 @@ class CreateProfilePage(CTkFrame):
         self.profile_image_button.configure(image=default_image)
 
     def upload_custom_profile_picture(self):
-        custom_image_path = filedialog.askopenfilename()
-        new_profile_image = Image.open(custom_image_path)
+        self.image_path = filedialog.askopenfilename()
+        new_profile_image = Image.open(self.image_path)
         self.profile_image = new_profile_image
         profile_image = CTkImage(new_profile_image, size=(100, 100))
         self.profile_image_button.configure(image=profile_image)
@@ -132,6 +130,36 @@ class CreateProfilePage(CTkFrame):
         from controllers import PageController, Pages
         PageController.set_page(self.window, Pages.PROFILE)
 
+    def check_for_empty_inputs(self) -> bool:
+        TOAST_DELAY = 3000
+        if len(self.profile_name_entry.get()) == 0:
+            Toast(self.window, "Name cannot be empty", TOAST_DELAY)
+            return True
+        elif len(self.root_password_entry.get()) == 0:
+            Toast(self.window, "Root password cannot be empty", TOAST_DELAY)
+            return True
+        elif len(self.confirm_password_entry.get()) == 0:
+            Toast(self.window, "Confirm password cannot be empty", TOAST_DELAY)
+            return True
+        return False
+
+    def create_profile_file(self):
+        from controllers import File, Password
+        file_name = f"{self.profile_name_entry.get()}.profile"
+        successful = File.create(file_name)
+        if successful:
+            Toast(self.window, "Error creating profile", 3000)
+        hashed_password = Password.hash(self.root_password_entry.get())
+        file_content = f"{self.image_path}\n{self.profile_name_entry.get()}\n{hashed_password}"
+        successful = File.update(file_name, file_content)
+        if not successful:
+            Toast(self.window, "Error writing profile", 3000)
+
     def create_profile(self):
-        pass
+        is_empty = self.check_for_empty_inputs()
+        if not is_empty:
+            if self.root_password_entry.get() == self.confirm_password_entry.get():
+                self.create_profile_file()
+            else:
+                Toast(self.window, "Passwords don't match", 3000)
 
