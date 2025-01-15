@@ -6,6 +6,9 @@ __pycache__/
 *.enc
 *.ps1
 
+# Custom
+profiles
+
 # C extensions
 *.so
 

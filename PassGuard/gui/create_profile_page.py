@@ -1,6 +1,8 @@
 from customtkinter import CTkFrame, CTkLabel, CTkEntry, CTkButton, CTkImage, filedialog
 from PIL import Image, ImageEnhance
 from gui.widgets import Toast
+import sys
+import os
 
 class CreateProfilePage(CTkFrame):
     def __init__(self, master, **kwargs):
@@ -8,6 +10,7 @@ class CreateProfilePage(CTkFrame):
 
         self.window = master
         self.profile_image = None
+        self.current_dir = None
 
         ENTRY_WIDTH = 250
         ENTRY_HEIGHT = 30
@@ -22,8 +25,12 @@ class CreateProfilePage(CTkFrame):
             font=('Segoe UI', 36)
         )
         message.grid(row=0, column=0, columnspan=2, padx=0, pady=(30, 0))
-
-        self.image_path = 'assets/default_avatar.png'
+        if getattr(sys, 'frozen', False):
+            exe_path = sys.executable
+            self.current_dir = os.path.dirname(exe_path)
+            self.image_path = os.path.join(self.current_dir, 'assets/default_avatar.png')
+        else:
+            self.image_path = 'assets/default_avatar.png'
         self.default_image = Image.open(self.image_path)
         self.profile_image = self.default_image
         default_button_image = CTkImage(self.default_image, size=(100, 100))
@@ -145,21 +152,30 @@ class CreateProfilePage(CTkFrame):
 
     def create_profile_file(self):
         from controllers import File, Password
-        file_name = f"{self.profile_name_entry.get()}.profile"
+
+        file_name = f"profiles/{self.profile_name_entry.get()}.profile"
+        if self.current_dir:
+            file_name = self.current_dir + f"profiles/{self.profile_name_entry.get()}.profile"
         successful = File.create(file_name)
         if successful:
             Toast(self.window, "Error creating profile", 3000)
+            return False
         hashed_password = Password.hash(self.root_password_entry.get())
-        file_content = f"{self.image_path}\n{self.profile_name_entry.get()}\n{hashed_password}"
+        file_content = f"{self.image_path}\n{self.profile_name_entry.get()}\n{str(hashed_password)}"
         successful = File.update(file_name, file_content)
         if not successful:
             Toast(self.window, "Error writing profile", 3000)
+            return False
+        return True
 
     def create_profile(self):
+        from controllers import PageController, Pages
         is_empty = self.check_for_empty_inputs()
         if not is_empty:
             if self.root_password_entry.get() == self.confirm_password_entry.get():
-                self.create_profile_file()
+                successful = self.create_profile_file()
+                if successful:
+                    PageController.set_page(self.window, Pages.PASSWORD_HUB)
             else:
                 Toast(self.window, "Passwords don't match", 3000)
 

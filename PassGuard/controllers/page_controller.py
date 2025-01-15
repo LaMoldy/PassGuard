@@ -1,10 +1,11 @@
 from customtkinter import CTk, CTkFrame
 from enum import Enum
-from gui import ProfilePage, CreateProfilePage
+from gui import ProfilePage, CreateProfilePage, PasswordHubPage
 
 class Pages(Enum):
     PROFILE = 0
     CREATE_PROFILE = 1
+    PASSWORD_HUB = 2
 
 class PageController():
     previous_page = None
@@ -24,3 +25,5 @@ class PageController():
                 return ProfilePage(root)
             case Pages.CREATE_PROFILE:
                 return CreateProfilePage(root)
+            case Pages.PASSWORD_HUB:
+                return PasswordHubPage(root)

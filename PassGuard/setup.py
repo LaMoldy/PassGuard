@@ -4,7 +4,7 @@ from cx_Freeze import Executable
 build_exe_options = {
     'packages': ['os', 'platform'],
     'includes': [],
-    'include_files': ['assets'],
+    'include_files': ['assets', 'profiles'],
     'build_exe': '../build'
 }
 
@@ -33,7 +33,8 @@ setup(
     executables=[
         Executable(
             'main.py',
-            base='Win32GUI' if __import__('sys').platform == 'win32' else None,
+           # base='Win32GUI' if __import__('sys').platform == 'win32' else None,
+            base=None,
             target_name='PassGuard.exe',
         )
     ]
