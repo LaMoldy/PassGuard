@@ -25,12 +25,14 @@ class CreateProfilePage(CTkFrame):
             font=('Segoe UI', 36)
         )
         message.grid(row=0, column=0, columnspan=2, padx=0, pady=(30, 0))
-        if getattr(sys, 'frozen', False):
+
+        if getattr(sys, 'frozen', False):  # This is used for exe version
             exe_path = sys.executable
             self.current_dir = os.path.dirname(exe_path)
             self.image_path = os.path.join(self.current_dir, 'assets/default_avatar.png')
         else:
-            self.image_path = 'assets/default_avatar.png'
+            self.image_path = 'assets/default_avatar.png' # This is used for running with python in cmd
+
         self.default_image = Image.open(self.image_path)
         self.profile_image = self.default_image
         default_button_image = CTkImage(self.default_image, size=(100, 100))
@@ -150,32 +152,23 @@ class CreateProfilePage(CTkFrame):
             return True
         return False
 
-    def create_profile_file(self):
-        from controllers import File, Password
-
-        file_name = f"profiles/{self.profile_name_entry.get()}.profile"
-        if self.current_dir:
-            file_name = self.current_dir + f"profiles/{self.profile_name_entry.get()}.profile"
-        successful = File.create(file_name)
-        if successful:
-            Toast(self.window, "Error creating profile", 3000)
-            return False
-        hashed_password = Password.hash(self.root_password_entry.get())
-        file_content = f"{self.image_path}\n{self.profile_name_entry.get()}\n{str(hashed_password)}"
-        successful = File.update(file_name, file_content)
-        if not successful:
-            Toast(self.window, "Error writing profile", 3000)
-            return False
-        return True
-
     def create_profile(self):
-        from controllers import PageController, Pages
+        from controllers import PageController, Pages, Profile
         is_empty = self.check_for_empty_inputs()
         if not is_empty:
             if self.root_password_entry.get() == self.confirm_password_entry.get():
-                successful = self.create_profile_file()
+                file_name = f"profiles/{self.profile_name_entry.get()}.profile"
+                msg, successful = Profile.create_profile(
+                    file_name,
+                    self.current_dir,
+                    self.profile_name_entry.get(),
+                    self.root_password_entry.get(),
+                    self.image_path
+                )
                 if successful:
                     PageController.set_page(self.window, Pages.PASSWORD_HUB)
+                else:
+                    Toast(self.window, msg, 3000)
             else:
                 Toast(self.window, "Passwords don't match", 3000)
 

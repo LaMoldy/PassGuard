@@ -1,18 +1,18 @@
-import os
+import os, os.path
 
 class File():
     @staticmethod
     def read(file_path: str) -> tuple[str, bool]:
         try:
             f = open(file_path, "r")
-            return r.read(), True
+            return f.read(), True
         except:
             return "", False
 
     @staticmethod
-    def create(file_name: str) -> bool:
+    def create(file_path: str) -> bool:
         try:
-            f = open(file_path, "x")
+            open(file_path, "x")
             return True
         except:
             return False
@@ -32,3 +32,5 @@ class File():
             os.remove(file_path)
             return True
         return False
+
+
