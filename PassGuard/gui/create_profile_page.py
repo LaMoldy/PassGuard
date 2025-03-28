@@ -7,7 +7,6 @@ import os
 class CreateProfilePage(CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
         self.window = master
         self.profile_image = None
         self.current_dir = None

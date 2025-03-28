@@ -11,19 +11,19 @@ class PageController():
     previous_page = None
 
     @classmethod
-    def set_page(cls, root: CTk, next_page: Pages):
+    def set_page(cls, root: CTk, next_page: Pages, data=""):
         if cls.previous_page:
             cls.previous_page.pack_forget()
         page = PageController._get_page(root, next_page)
-        page.pack(pady=0)
+        page.pack(pady=20)
         cls.previous_page = page
 
     @staticmethod
-    def _get_page(root: CTk, page: Pages) -> CTkFrame:
+    def _get_page(root: CTk, page: Pages, data="") -> CTkFrame:
         match (page):
             case Pages.PROFILE:
                 return ProfilePage(root)
             case Pages.CREATE_PROFILE:
                 return CreateProfilePage(root)
             case Pages.PASSWORD_HUB:
-                return PasswordHubPage(root)
+                return PasswordHubPage(root, data)

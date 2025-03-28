@@ -8,7 +8,7 @@ class App(CTk):
     TITLE = 'PassGuard'
     WIDTH = 800
     HEIGHT = 500
-    WIDTH_RESIZABLE = False
+    WIDTH_RESIZABLE = True
     HEIGHT_RESIZABLE = False
     DEFAULT_APPEARANCE = 'dark'
 

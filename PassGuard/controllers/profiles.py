@@ -56,7 +56,6 @@ class Profile():
     @staticmethod
     def get_profile_pictures(profile_directory: str) -> list[str]:
         profile_pictures = []
-
         for filename in os.listdir(profile_directory):
             if filename.endswith(".profile"):
                 file_path = os.path.join(profile_directory, filename)
@@ -71,3 +70,15 @@ class Profile():
     @staticmethod
     def count_profiles(profile_directory: str) -> int:
         return sum(1 for file in os.listdir(profile_directory) if file.endswith(".profile"))
+
+    @staticmethod
+    def get_profile_password(profile_directory: str, profile_name: str):
+        from controllers import File
+        file_path = os.path.join(profile_directory, profile_name + ".profile")
+        content, error = File.read(file_path)
+        if not error:
+            return ""
+        lines = content.splitlines()
+        if len(lines) > 3:
+            return lines[2]
+        return ""

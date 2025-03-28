@@ -1,13 +1,13 @@
 import os, os.path
 
-class File():
+class File:
     @staticmethod
     def read(file_path: str) -> tuple[str, bool]:
         try:
             f = open(file_path, "r")
             return f.read(), True
-        except:
-            return "", False
+        except Exception as e:
+            return str(e), False
 
     @staticmethod
     def create(file_path: str) -> bool:
