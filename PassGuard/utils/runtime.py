@@ -9,3 +9,13 @@ def is_exe() -> bool:
     """
     return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
 
+def get_project_directory() -> str:
+    """
+    Gets the directory of the project
+
+    Returns:
+        str: The directory of the project
+    """
+    if is_exe():
+        return sys._MEIPASS # type: ignore
+    return "profiles/"
