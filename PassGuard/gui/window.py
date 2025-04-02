@@ -1,42 +1,38 @@
-from customtkinter import CTk, set_appearance_mode
-import platform
 import os
+import platform
 import sys
-from PIL import ImageTk
 
-class App(CTk):
-    TITLE = 'PassGuard'
-    WIDTH = 800
-    HEIGHT = 500
-    WIDTH_RESIZABLE = True
-    HEIGHT_RESIZABLE = False
-    DEFAULT_APPEARANCE = 'dark'
+from tkinter import PhotoImage
+from customtkinter import CTk, set_appearance_mode
+from utils import is_exe
 
-    exe_path = ''
-    current_dir = ''
-    window_icon = ''
-    window_image = ''
-
-    if getattr(sys, 'frozen', False):
-        exe_path = sys.executable
-        current_dir = os.path.dirname(exe_path)
-        window_icon = os.path.join(f"{current_dir}", 'assets/logo.ico')
-        window_image = os.path.join(current_dir, 'assets/logo.png')
-    else:
-        window_icon = 'assets/logo.ico'
-        window_image = 'assets/logo.png'
-
-    def __init__(self):
+class Window(CTk):
+    def __init__(self, width: int, height: int,
+                 title: str, win_resizable: bool, default_theme: str = "dark") -> None:
         super().__init__()
-        self.title(self.TITLE)
-        self.geometry(f"{self.WIDTH}x{self.HEIGHT}")
-        self.resizable(self.WIDTH_RESIZABLE, self.HEIGHT_RESIZABLE)
+        self.title(title)
+        self.geometry(f"{width}x{height}")
+        self.resizable(win_resizable, win_resizable)
+        self.set_window_icon()
+        set_appearance_mode(default_theme)
 
-        # Setting the window icon
-        if platform.system() == 'Windows':
-            self.iconbitmap(self.window_icon) # This is only supported on Windows
+    def get_icon_paths(self) -> tuple[str, str]:
+        window_icon = ""
+        window_image = ""
+        if is_exe():
+            window_icon = os.path.join(sys._MEIPASS, "assets/logo.ico") # type: ignore
+            window_image = os.path.join(sys._MEIPASS, "assets/logo.png") # type: ignore
         else:
-            self.iconimage = ImageTk.PhotoImage(file=self.window_image)
-            self.iconphoto(True, self.iconimage)
+            window_icon = "assets/logo.ico"
+            window_image = "assets/logo.png"
+        return window_icon, window_image
 
-        set_appearance_mode(self.DEFAULT_APPEARANCE)
+    def set_window_icon(self):
+        window_icon, window_image = self.get_icon_paths()
+        if platform.system() == "Windows":
+            self.iconbitmap(window_icon)
+        else:
+            icon_image = PhotoImage(file=window_image)
+            self.iconphoto(True, icon_image)
+
+

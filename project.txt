@@ -1,0 +1,95 @@
+Change Log:
+(2025-03-06, Nikk Jackson):
+    - Created the basic project without the gui, and controller files
+    - Made the tests folder for future tests
+    - Created the virtual environment and installed the packages
+    - Added this file to track changes and future features
+    - Removed the main functions code in the main python file
+
+(2025-03-07, Nikk Jackson):
+    - Created a test folder
+    - Made a file class
+        - Read files
+        - Delete a file
+        - Create a file
+        - Appends to a file
+        - Update a file
+        - Create a directory
+        - Delete a directory
+    - Created a test file to test the file class
+        - Tests for reading files
+        - Tests for deleting files
+        - Tests for creating files
+        - Tests for updating files
+        - Tests for appending to files
+        - Tests for creating directories
+        - Tests for deleting directories
+    - Made a hashing class
+        - Create a function to hash an input
+        - Created a function to compare the hash to the input
+    - Made a file for testing the hashing class
+        - Test hashing
+        - Test comparing hashes
+    - Created encryption class
+
+(2025-03-11, Nikk Jackson):
+    - Added documentation comments to the hashing handler functions
+    - Added encryption class
+        - Added encrypt function
+        - Added decrypt function
+        - Added setup_kdf function
+    - Made tests for encryption class
+    - Made controllers module with init file
+    - Created profile controller class
+
+(2025-03-17, Nikk Jackson):
+    - Added functions for the profile controller
+        - Get profile names
+        - Get profile content by line number
+    - Modified tests folder to seperate tests for controllers and utils
+        - Added path to testpaths in pytest.ini
+    - Added tests for profile controller
+        - Get profile names
+        - Get profile content by line number
+
+(2025-03-18, Nikk Jackson):
+    - Added functions for the profile controller
+        - Create profiles
+        - Appending to the profile
+    - Added tests for profile controller
+        - Create profile
+        - Appending to the profile
+    - Created profile model with basic fields and no methods
+    - Created application group model with basic fields and no methods
+    - Created gui folder
+        - Created views folder for each frame
+        - Created window class
+            - Created init function that takes window sizes, title, resizable and the default theme
+            - Made functions for setting the icon
+                - set_window_icon
+                - get_icon_paths
+    - Created runtime python file for runtime methods
+        - is_exe
+            - Checking if the project is running from an exe
+        - current_directory
+            - Get the current directory of the exe
+    - Created tests for the runtime python file
+        - is_exe
+        - currnet_directory
+    - Removed cx_freeze as it was causing issues and added pyinstaller
+    - Changed the code to use pyinstaller required things like sys._MEIPASS for getting assets
+    - Removed get_current_dir method and tests as it is no longer needed due to sys._MEIPASS
+    - Updated readme to use pyinstaller building
+
+(2025-03-28, Nikk Jackson)
+    - Updated runtime tests because it was failing
+    - Had to fix is_exe and should be working now
+    - Created a frame manager to load frames
+    - Created tests for a frame manager methods created at this moment
+        - load_frame
+        - get_frame
+    - Created a basic welcome screen with profile selection view
+    - Made tests for the profile_selection_view
+
+(2025-04-1, Nikk Jackson)
+    - Added documentation to functions that didn't have any

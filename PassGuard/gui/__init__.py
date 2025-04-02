@@ -1,8 +1,4 @@
-from .window import App
-from .profile_frame import ProfilePage
-from .create_profile_page import CreateProfilePage
-from .widgets import Toast
-from .password_hub_page import PasswordHubPage
-from .password_window import PasswordWindow
+from .window import Window
+from .frame_manager import FrameManager, Frames
 
-__all__ = ['App', 'ProfilePage', 'CreateProfilePage', 'Toast', 'PasswordHubPage', 'PasswordWindow']
+__all__ = ["Window", "FrameManager", "Frames"]

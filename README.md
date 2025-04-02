@@ -1,5 +1,5 @@
 # pass-guard
-A simple password manager that allows you to generate and save passwords.
+A simple password manager that allows you to generate and save passwords throughout profiles.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -21,11 +21,11 @@ python -m pip install -r requirements.txt
 
 ## Usage
 To open the password manager
-1. Build the project with the setup.py file
+1. Build the project with the main spec file
 2. Run the exe file
 ```bash
-python setup.py build
-./build/PassGuard.exe
+pyinstaller main.spec 
+./dist/main/main.exe
 ```
 
 ## Contributing

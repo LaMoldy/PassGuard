@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+bcrypt = "==4.2.1"
+customtkinter = "==5.2.2"
+cryptography = "==44.0.0"
+pillow = "==11.0.0"
+pyinstaller = "==6.12.0"
+pytest = "==8.3.4"
+
+[dev-packages]
+
+[requires]
+python_version = "3.13"

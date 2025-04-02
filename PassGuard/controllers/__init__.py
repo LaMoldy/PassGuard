@@ -1,6 +1,3 @@
-from .page_controller import PageController, Pages
-from .password import Password
-from .file import File
-from .profiles import Profile
+from .profile_controller import ProfileController
 
-__all__ = ['PageController', 'Pages', 'Password', 'Profile', 'File']
+__all__ = ["ProfileController"]
