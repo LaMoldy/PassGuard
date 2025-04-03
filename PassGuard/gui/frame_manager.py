@@ -1,9 +1,10 @@
 from customtkinter import CTk, CTkFrame
 from enum import Enum
-from gui.views import ProfileSelectionView
+from gui.views import ProfileSelectionView, ProfileCreationView
 
 class Frames(Enum):
     PROFILE_SELECTION = 0
+    PROFILE_CREATION = 1
 
 class FrameManager:
     previous_frame = None
@@ -21,3 +22,5 @@ class FrameManager:
         match frame:
             case Frames.PROFILE_SELECTION:
                 return ProfileSelectionView(root)
+            case Frames.PROFILE_CREATION:
+                return ProfileCreationView(root)

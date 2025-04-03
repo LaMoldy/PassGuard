@@ -7,6 +7,7 @@ class ProfileSelectionView(CTkFrame):
     def __init__(self, root: CTk, **kwargs):
         super().__init__(root, **kwargs)
 
+        self.root = root
         self.window_bg = root.cget('fg_color')
         self.configure(fg_color=self.window_bg)
 
@@ -48,7 +49,6 @@ class ProfileSelectionView(CTkFrame):
         profile_directory = get_project_directory()
         if len(profile_names) > 0 and len(profile_names) <= 5:
             image_path = ProfileController.get_profile_content_by_line_number(profile_directory, "test", 0)
-            print("Path: ", image_path)
             profile_image = Image.open(image_path)
             profile_picture = CTkImage(profile_image, size=(100, 100))
             profile_count = 0
@@ -110,7 +110,8 @@ class ProfileSelectionView(CTkFrame):
         self.create_new_profile_button.bind("<Leave>", self.create_profile_on_leave)
 
     def create_new_profile(self):
-        print("Create new profile")
+        from gui import FrameManager, Frames
+        FrameManager.load_frame(self.root, Frames.PROFILE_CREATION)
 
 
     def profile_button_hover(self, event, profile_button, profile_image, profile_name):
