@@ -50,6 +50,17 @@ class TestProfileSelectionView:
         yield root
         root.destroy()
 
+    @pytest.fixture(autouse=True)
+    def cleanup_test_files(self):
+        yield
+        # Clean up any test profile images that might have been created
+        test_image_path = os.path.join(str(self.root), "test_profile.png")
+        if os.path.exists(test_image_path):
+            try:
+                os.remove(test_image_path)
+            except Exception as e:
+                print(f"Warning: Could not remove test file {test_image_path}: {e}")
+
     def test_initialization(self, root):
         view = ProfileSelectionView(root)
         assert isinstance(view, ProfileSelectionView)
@@ -80,15 +91,20 @@ class TestProfileSelectionView:
         test_image_path = os.path.join(str(root), "test_profile.png")
         test_image.save(test_image_path)
         
-        mock_get_names.return_value = ["Test Profile"]
-        mock_get_content.return_value = test_image_path
-        
-        view = ProfileSelectionView(root)
-        profile_button = view.winfo_children()[1]
-        assert profile_button.cget('width') == 90
-        assert profile_button.cget('height') == 90
-        assert profile_button.cget('corner_radius') == 7
-        assert profile_button.cget('text') == " "
+        try:
+            mock_get_names.return_value = ["Test Profile"]
+            mock_get_content.return_value = test_image_path
+            
+            view = ProfileSelectionView(root)
+            profile_button = view.winfo_children()[1]
+            assert profile_button.cget('width') == 90
+            assert profile_button.cget('height') == 90
+            assert profile_button.cget('corner_radius') == 7
+            assert profile_button.cget('text') == " "
+        finally:
+            # Clean up the test image
+            if os.path.exists(test_image_path):
+                os.remove(test_image_path)
 
     @patch('controllers.ProfileController.get_profile_names')
     def test_display_too_many_profiles(self, mock_get_names, root):
@@ -107,14 +123,20 @@ class TestProfileSelectionView:
         test_image = Image.new('RGB', (100, 100), color='red')
         test_image_path = os.path.join(str(root), "test_profile.png")
         test_image.save(test_image_path)
-        mock_get_names.return_value = ["Test Profile"]
-        mock_get_content.return_value = test_image_path
         
-        view = ProfileSelectionView(root)
-        profile_button = view.winfo_children()[1]
-        view.profile_button_hover(None, profile_button, test_image, "Test Profile")
-        assert profile_button.cget('text') == "Test Profile"
-        assert profile_button.cget('compound') == "center"
+        try:
+            mock_get_names.return_value = ["Test Profile"]
+            mock_get_content.return_value = test_image_path
+            
+            view = ProfileSelectionView(root)
+            profile_button = view.winfo_children()[1]
+            view.profile_button_hover(None, profile_button, test_image, "Test Profile")
+            assert profile_button.cget('text') == "Test Profile"
+            assert profile_button.cget('compound') == "center"
+        finally:
+            # Clean up the test image
+            if os.path.exists(test_image_path):
+                os.remove(test_image_path)
 
     @patch('controllers.ProfileController.get_profile_names')
     @patch('controllers.ProfileController.get_profile_content_by_line_number')
@@ -123,14 +145,20 @@ class TestProfileSelectionView:
         test_image = Image.new('RGB', (100, 100), color='red')
         test_image_path = os.path.join(str(root), "test_profile.png")
         test_image.save(test_image_path)
-        mock_get_names.return_value = ["Test Profile"]
-        mock_get_content.return_value = test_image_path
         
-        view = ProfileSelectionView(root)
-        profile_button = view.winfo_children()[1]
-        view.profile_button_leave(None, profile_button, test_image)
-        assert profile_button.cget('text') == " "
-        assert profile_button.cget('compound') == "top"
+        try:
+            mock_get_names.return_value = ["Test Profile"]
+            mock_get_content.return_value = test_image_path
+            
+            view = ProfileSelectionView(root)
+            profile_button = view.winfo_children()[1]
+            view.profile_button_leave(None, profile_button, test_image)
+            assert profile_button.cget('text') == " "
+            assert profile_button.cget('compound') == "top"
+        finally:
+            # Clean up the test image
+            if os.path.exists(test_image_path):
+                os.remove(test_image_path)
 
     @patch('gui.FrameManager.load_frame')
     @patch('gui.Frames')
