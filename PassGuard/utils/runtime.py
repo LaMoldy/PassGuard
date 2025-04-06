@@ -20,3 +20,14 @@ def get_profile_directory() -> str:
     if is_exe():
         return path.join(sys._MEIPASS, "profiles")# type: ignore
     return "profiles/"
+
+def get_asset_directory() -> str:
+    """
+    Gets the directory of the assets
+
+    Returns:
+        str: The directory of the assets
+    """
+    if is_exe():
+        return path.join(sys._MEIPASS, "assets") # type: ignore
+    return "assets/"
