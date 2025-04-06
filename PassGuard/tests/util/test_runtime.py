@@ -30,7 +30,7 @@ class TestRuntime:
     def test_get_profile_directory_exe(self):
         with patch.object(sys, "frozen", True, create=True), \
              patch.object(sys, "_MEIPASS", "/path/to/meipass", create=True):
-            expected = os.path.join("/path/to/meipass", "profiles")
+            expected = os.path.join("/path/to/meipass", "profiles\\")
             assert get_profile_directory() == expected
 
     def test_get_profile_directory_non_exe(self):
@@ -40,7 +40,7 @@ class TestRuntime:
     def test_get_asset_directory_exe(self):
         with patch.object(sys, "frozen", True, create=True), \
              patch.object(sys, "_MEIPASS", "/path/to/meipass", create=True):
-            expected = os.path.join("/path/to/meipass", "assets")
+            expected = os.path.join("/path/to/meipass", "assets\\")
             assert get_asset_directory() == expected
 
     def test_get_asset_directory_non_exe(self):
