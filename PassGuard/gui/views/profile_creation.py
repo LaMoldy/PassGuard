@@ -1,24 +1,25 @@
 from customtkinter import CTkButton, CTkFrame, CTkLabel, CTkEntry, CTkImage, filedialog
-from utils.runtime import get_asset_directory
+from utils.hashing_handler import HashingHandler
+from gui.components import Toast
+from controllers import ProfileController
+from utils.runtime import get_asset_directory, get_profile_directory
 from PIL import Image, ImageEnhance
 
 
 class ProfileCreationView(CTkFrame):
     def __init__(self, root, **kwargs):
         super().__init__(root)
-
         self.root = root
         self.window_bg = root.cget('fg_color')
         self.configure(fg_color=self.window_bg)
-
-        self.profile_image = self.set_default_image()
+        self.profile_image, self.profile_image_path = self.set_default_image()
         self.display_view_components()
 
 
     def set_default_image(self):
         default_image_path = get_asset_directory() + "default_avatar.png"
         default_image = Image.open(default_image_path)
-        return default_image
+        return default_image, default_image_path
 
     def display_view_components(self):
         message = CTkLabel(
@@ -39,12 +40,12 @@ class ProfileCreationView(CTkFrame):
         )
         profile_name_label.grid(row=3, column=0, columnspan=2, padx=0, pady=0)
 
-        profile_name_entry = CTkEntry(
+        self.profile_name_entry = CTkEntry(
             self,
             width=250,
             height=30
         )
-        profile_name_entry.grid(row=4, column=0, columnspan=2, padx=0, pady=0)
+        self.profile_name_entry.grid(row=4, column=0, columnspan=2, padx=0, pady=0)
 
         root_password_label = CTkLabel(
             self,
@@ -55,13 +56,13 @@ class ProfileCreationView(CTkFrame):
         )
         root_password_label.grid(row=5, column=0, columnspan=2, padx=0, pady=0)
 
-        root_password_entry = CTkEntry(
+        self.root_password_entry = CTkEntry(
             self,
             width=250,
             height=30,
             show="*"
         )
-        root_password_entry.grid(row=6, column=0, columnspan=2, padx=0, pady=0)
+        self.root_password_entry.grid(row=6, column=0, columnspan=2, padx=0, pady=0)
 
         confirm_password_label = CTkLabel(
             self,
@@ -72,13 +73,13 @@ class ProfileCreationView(CTkFrame):
         )
         confirm_password_label.grid(row=7, column=0, columnspan=2, padx=0, pady=0)
 
-        confirm_password_entry = CTkEntry(
+        self.confirm_password_entry = CTkEntry(
             self,
             width=250,
             height=30,
             show="*"
         )
-        confirm_password_entry.grid(row=8, column=0, columnspan=2, padx=0, pady=0)
+        self.confirm_password_entry.grid(row=8, column=0, columnspan=2, padx=0, pady=0)
 
         backbutton = CTkButton(
             self,
@@ -120,6 +121,7 @@ class ProfileCreationView(CTkFrame):
         image_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
         new_profile_image = Image.open(image_path)
         self.profile_image = new_profile_image
+        self.profile_image_path = image_path
         new_image = CTkImage(new_profile_image, size=(100, 100))
         profile_image_button.configure(image=new_image)
 
@@ -132,8 +134,33 @@ class ProfileCreationView(CTkFrame):
         default_image = CTkImage(self.profile_image, size=(100, 100))
         profile_image_button.configure(image=default_image)
 
+    def check_for_empty_inputs(self):
+        TOAST_DELAY = 3000
+        if len(self.profile_name_entry.get()) == 0:
+            Toast(self.root, "Name cannot be empty", TOAST_DELAY)
+            return True
+        elif len(self.root_password_entry.get()) == 0:
+            Toast(self.root, "Root password cannot be empty", TOAST_DELAY)
+            return True
+        elif len(self.confirm_password_entry.get()) == 0:
+            Toast(self.root, "Confirm password cannot be empty", TOAST_DELAY)
+            return True
+        return False
+
+
     def create_profile(self):
-        pass
+        from gui import FrameManager, Frames
+        is_inputs_empty = self.check_for_empty_inputs()
+        if not is_inputs_empty:
+            if self.root_password_entry.get() == self.confirm_password_entry.get():
+                hashed_password = HashingHandler.hash(self.root_password_entry.get())
+                profile_directory = get_profile_directory()
+                profile_file_name = self.profile_name_entry.get().replace(" ", "_")
+                file_content = f"{self.profile_image_path}\n{self.profile_name_entry.get()}\n{hashed_password}"
+                ProfileController.create_profile(profile_directory, profile_file_name, file_content)
+                FrameManager.load_frame(self.root, Frames.PROFILE_SELECTION)
+            else:
+                Toast(self.root, "Passwords don't match", 3000)
 
     def go_to_previous_page(self):
         from gui import FrameManager, Frames
