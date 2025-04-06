@@ -1,4 +1,6 @@
-from customtkinter import CTkButton, CTkFrame, CTkLabel, CTkEntry
+from customtkinter import CTkButton, CTkFrame, CTkLabel, CTkEntry, CTkImage, filedialog
+from utils.runtime import get_asset_directory
+from PIL import Image, ImageEnhance
 
 
 class ProfileCreationView(CTkFrame):
@@ -9,8 +11,14 @@ class ProfileCreationView(CTkFrame):
         self.window_bg = root.cget('fg_color')
         self.configure(fg_color=self.window_bg)
 
+        self.profile_image = self.set_default_image()
         self.display_view_components()
 
+
+    def set_default_image(self):
+        default_image_path = get_asset_directory() + "default_avatar.png"
+        default_image = Image.open(default_image_path)
+        return default_image
 
     def display_view_components(self):
         message = CTkLabel(
@@ -92,7 +100,7 @@ class ProfileCreationView(CTkFrame):
         create_profile_button.grid(row=9, column=1, padx=(20, 0), pady=30)
 
     def display_profile_image_button(self):
-
+        default_profile_image = CTkImage(self.profile_image, size=(100, 100))
         profile_image_button = CTkButton(
             self,
             width=90,
@@ -100,22 +108,30 @@ class ProfileCreationView(CTkFrame):
             text ="",
             fg_color="transparent",
             hover_color=self.window_bg,
+            image=default_profile_image,
             cursor="hand2",
-            command=self.load_custom_profile_image
+            command=lambda: self.load_custom_profile_image(profile_image_button)
         )
         profile_image_button.grid(row=2, column=0, columnspan=2, padx=0, pady=10)
-        profile_image_button.bind("<Enter>", self.profile_image_hover)
-        profile_image_button.bind("<Leave>", self.profile_image_leave)
+        profile_image_button.bind("<Enter>", lambda event, b=profile_image_button: self.profile_image_hover(event, b))
+        profile_image_button.bind("<Leave>", lambda event, b=profile_image_button: self.profile_image_leave(event, b))
 
 
-    def load_custom_profile_image(self):
-        pass
+    def load_custom_profile_image(self, profile_image_button):
+        image_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        new_profile_image = Image.open(image_path)
+        self.profile_image = new_profile_image
+        new_image = CTkImage(new_profile_image, size=(100, 100))
+        profile_image_button.configure(image=new_image)
 
-    def profile_image_hover(self, event):
-        pass
+    def profile_image_hover(self, event, profile_image_button):
+        darker_image = ImageEnhance.Brightness(self.profile_image).enhance(0.5)
+        hover_image = CTkImage(darker_image, size=(100, 100))
+        profile_image_button.configure(image=hover_image)
 
-    def profile_image_leave(self, event):
-        pass
+    def profile_image_leave(self, event, profile_image_button):
+        default_image = CTkImage(self.profile_image, size=(100, 100))
+        profile_image_button.configure(image=default_image)
 
     def create_profile(self):
         pass

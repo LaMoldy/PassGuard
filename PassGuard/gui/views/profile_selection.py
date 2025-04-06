@@ -47,7 +47,6 @@ class ProfileSelectionView(CTkFrame):
 
     def display_profile_buttons(self, profile_names):
         profile_directory = get_profile_directory()
-        print(profile_directory)
         if len(profile_names) > 0 and len(profile_names) <= 5:
             image_path = ProfileController.get_profile_content_by_line_number(profile_directory, "test", 0)
             profile_image = Image.open(image_path)
