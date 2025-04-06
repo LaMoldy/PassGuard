@@ -4,7 +4,7 @@ from gui.components import Toast
 from controllers import ProfileController
 from utils.runtime import get_asset_directory, get_profile_directory
 from PIL import Image, ImageEnhance
-
+import os
 
 class ProfileCreationView(CTkFrame):
     def __init__(self, root, **kwargs):
@@ -17,8 +17,10 @@ class ProfileCreationView(CTkFrame):
 
 
     def set_default_image(self):
+        default_image = None
         default_image_path = get_asset_directory() + "default_avatar.png"
-        default_image = Image.open(default_image_path)
+        if os.path.exists(default_image_path):
+            default_image = Image.open(default_image_path)
         return default_image, default_image_path
 
     def display_view_components(self):
@@ -100,6 +102,8 @@ class ProfileCreationView(CTkFrame):
         create_profile_button.grid(row=9, column=1, padx=(20, 0), pady=30)
 
     def display_profile_image_button(self):
+        if self.profile_image is None:
+            return
         default_profile_image = CTkImage(self.profile_image, size=(100, 100))
         profile_image_button = CTkButton(
             self,
