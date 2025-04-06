@@ -1,3 +1,4 @@
+from os import path
 import sys
 
 def is_exe() -> bool:
@@ -9,7 +10,7 @@ def is_exe() -> bool:
     """
     return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
 
-def get_project_directory() -> str:
+def get_profile_directory() -> str:
     """
     Gets the directory of the project
 
@@ -17,5 +18,5 @@ def get_project_directory() -> str:
         str: The directory of the project
     """
     if is_exe():
-        return sys._MEIPASS # type: ignore
+        return path.join(sys._MEIPASS, "profiles")# type: ignore
     return "profiles/"
