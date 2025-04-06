@@ -28,7 +28,6 @@ class ProfileCreationView(CTkFrame):
         )
         message.grid(row=0, column=0, columnspan=2, padx=0, pady=(30, 0))
 
-        # Image
         self.display_profile_image_button()
 
         profile_name_label = CTkLabel(
