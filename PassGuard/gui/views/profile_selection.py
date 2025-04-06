@@ -15,7 +15,8 @@ class ProfileSelectionView(CTkFrame):
 
 
     def display_view_components(self):
-        profile_names = ProfileController.get_profile_names("profiles/")
+        profile_directory = get_profile_directory()
+        profile_names = ProfileController.get_profile_names(profile_directory)
         profiles_button_count = len(profile_names) + 1 if len(profile_names) < 5 else 5
 
         view_title = "Profile Selection"
@@ -47,12 +48,15 @@ class ProfileSelectionView(CTkFrame):
 
     def display_profile_buttons(self, profile_names):
         profile_directory = get_profile_directory()
+        print("Directory: ", profile_directory)
         if len(profile_names) > 0 and len(profile_names) <= 5:
-            image_path = ProfileController.get_profile_content_by_line_number(profile_directory, "test", 0)
-            profile_image = Image.open(image_path)
-            profile_picture = CTkImage(profile_image, size=(100, 100))
             profile_count = 0
             for profile_name in profile_names:
+                print("Profile Name: ", profile_name)
+                image_path = ProfileController.get_profile_content_by_line_number(profile_directory, profile_name.replace(" ", "_"), 0)
+                print("Image Path: ", image_path)
+                profile_image = Image.open(image_path)
+                profile_picture = CTkImage(profile_image, size=(100, 100))
                 profile_button = CTkButton(
                     self,
                     width=90,
